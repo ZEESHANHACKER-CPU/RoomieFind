@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RoomieFind Listings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f8f8f8;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      margin-right: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #ccc;
+    }
+    .tab-btn.active {
+      background-color: #333;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+      margin-top: 20px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    form input, form textarea, form select {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    form button {
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .listing-container {
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>RoomieFind</h1>
+
+  <!-- Tabs -->
+  <button class="tab-btn active" id="tab-roommate">Find a Roommate</button>
+  <button class="tab-btn" id="tab-room">List a Room</button>
+
+  <!-- Roommate Form -->
+  <div class="tab-content active" id="content-roommate">
+    <h2>Roommate Form</h2>
+    <form id="roommate-form">
+      <input type="text" id="rm-name" placeholder="Enter Name" required />
+
+      <select id="rm-location" required>
+        <option value="" disabled selected>Select Location</option>
+        <option value="Karachi">Karachi</option>
+        <option value="Lahore">Lahore</option>
+        <option value="Islamabad">Islamabad</option>
+      </select>
+
+      <select id="rm-hobbies">
+        <option value="" disabled selected>Select Hobby</option>
+        <option value="Reading">Reading</option>
+        <option value="Gaming">Gaming</option>
+        <option value="Sports">Sports</option>
+        <option value="Music">Music</option>
+      </select>
+
+      <select id="rm-price" required>
+        <option value="" disabled selected>Select Price Range</option>
+        <option value="5000-10000">5000-10000</option>
+        <option value="10000-15000">10000-15000</option>
+        <option value="15000-20000">15000-20000</option>
+      </select>
+
+      <button type="submit">Add Roommate</button>
+    </form>
+  </div>
+
+  <!-- Room Form -->
+  <div class="tab-content" id="content-room">
+    <h2>Room Form</h2>
+    <form id="room-form">
+      <input type="text" id="room-location" placeholder="Location" required />
+      <input type="number" id="room-price" placeholder="Price" required />
+      <textarea id="room-description" placeholder="Description" required></textarea>
+      <button type="submit">Add Room</button>
+    </form>
+  </div>
+
+  <!-- Roommate Listings -->
+  <div class="listing-container" id="roommate-listings-display">
+    <h2>Roommate Listings</h2>
+    <div id="roommate-list">Loading roommate listings...</div>
+  </div>
+
+  <!-- Room Listings -->
+  <div class="listing-container" id="room-listings-display">
+    <h2>Room Listings</h2>
+    <div id="room-list">Loading room listings...</div>
+  </div>
+
+  <!-- Firebase + App Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCtXKQ8VMTnhHpTwNRBSE0vvUDMbYy4GK4",
+      authDomain: "roomiefindweb.firebaseapp.com",
+      databaseURL: "https://roomiefindweb-default-rtdb.firebaseio.com",
+      projectId: "roomiefindweb",
+      storageBucket: "roomiefindweb.firebasestorage.app",
+      messagingSenderId: "480755218685",
+      appId: "1:480755218685:web:1ec7f152b4cdb4eb132694",
+      measurementId: "G-S2MG44M2GB"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getDatabase(app);
+
+    // Tabs
+    const roommateTabBtn = document.getElementById('tab-roommate');
+    const roomTabBtn = document.getElementById('tab-room');
+    const roommateContent = document.getElementById('content-roommate');
+    const roomContent = document.getElementById('content-room');
+
+    roommateTabBtn.addEventListener('click', () => {
+      roommateTabBtn.classList.add('active');
+      roomTabBtn.classList.remove('active');
+      roommateContent.classList.add('active');
+      roomContent.classList.remove('active');
+    });
+
+    roomTabBtn.addEventListener('click', () => {
+      roomTabBtn.classList.add('active');
+      roommateTabBtn.classList.remove('active');
+      roomContent.classList.add('active');
+      roommateContent.classList.remove('active');
+    });
+
+    // Add Roommate
+    const roommateForm = document.getElementById('roommate-form');
+    roommateForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('rm-name').value;
+      const location = document.getElementById('rm-location').value;
+      const hobbies = document.getElementById('rm-hobbies').value;
+      const price = document.getElementById('rm-price').value;
+
+      const data = {
+        name,
+        location,
+        hobbies,
+        price: price ? price : null,
+        timestamp: new Date().toISOString()
+      };
+
+      const newRef = push(ref(db, 'roommates'));
+      set(newRef, data).then(() => {
+        alert("Roommate added!");
+        roommateForm.reset();
+      }).catch((err) => {
+        alert("Error: " + err);
+      });
+    });
+
+    // Add Room
+    const roomForm = document.getElementById('room-form');
+    roomForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const location = document.getElementById('room-location').value;
+      const price = document.getElementById('room-price').value;
+      const description = document.getElementById('room-description').value;
+
+      const data = {
+        location,
+        price: parseInt(price),
+        description,
+        timestamp: new Date().toISOString()
+      };
+
+      const newRef = push(ref(db, 'rooms'));
+      set(newRef, data).then(() => {
+        alert("Room added!");
+        roomForm.reset();
+      }).catch((err) => {
+        alert("Error: " + err);
+      });
+    });
+
+    // Show Roommates
+    const roommateListDiv = document.getElementById('roommate-list');
+    onValue(ref(db, 'roommates'), (snapshot) => {
+      const data = snapshot.val();
+      roommateListDiv.innerHTML = '';
+
+      if (data) {
+        Object.values(data).forEach((r) => {
+          const el = document.createElement('div');
+          el.style.background = '#fff8f2';
+          el.style.padding = '15px';
+          el.style.marginBottom = '15px';
+          el.style.borderRadius = '8px';
+          el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+          el.innerHTML = `
+            <h3>${r.name}</h3>
+            <p><strong>Location:</strong> ${r.location}</p>
+            <p><strong>Hobbies:</strong> ${r.hobbies || 'N/A'}</p>
+            <p><strong>Price Range:</strong> ${r.price || 'N/A'}</p>
+            <small>Listed: ${new Date(r.timestamp).toLocaleString()}</small>
+          `;
+          roommateListDiv.appendChild(el);
+        });
+      } else {
+        roommateListDiv.innerHTML = '<p>No roommate listings yet.</p>';
+      }
+    });
+
+    // Show Rooms
+    const roomListDiv = document.getElementById('room-list');
+    onValue(ref(db, 'rooms'), (snapshot) => {
+      const data = snapshot.val();
+      roomListDiv.innerHTML = '';
+
+      if (data) {
+        Object.values(data).forEach((room) => {
+          const el = document.createElement('div');
+          el.style.background = '#eef7ff';
+          el.style.padding = '15px';
+          el.style.marginBottom = '15px';
+          el.style.borderRadius = '8px';
+          el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+          el.innerHTML = `
+            <h3>Room in ${room.location}</h3>
+            <p><strong>Price:</strong> ${room.price}</p>
+            <p><strong>Description:</strong> ${room.description}</p>
+            <small>Listed: ${new Date(room.timestamp).toLocaleString()}</small>
+          `;
+          roomListDiv.appendChild(el);
+        });
+      } else {
+        roomListDiv.innerHTML = '<p>No room listings yet.</p>';
+      }
+    });
+  </script>
+</body>
+</html>

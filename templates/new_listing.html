@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RoomieFind Listing</title>
+  <style>
+    /* ... your existing styles ... */
+    body {
+      background-color: #fdf9f4;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #3B2F2F;
+    }
+
+    .listing-container {
+      max-width: 700px;
+      margin: 30px auto;
+      border-radius: 12px;
+      background: #fffdfa;
+      padding: 25px;
+      box-shadow: 0 6px 20px rgba(107, 76, 59, 0.3);
+      color: #3B2F2F;
+      position: relative;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 25px;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 14px 0;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      border-radius: 10px;
+      background: #A67B5B;
+      color: #fffdfa;
+      box-shadow: 0 4px 8px #6B4C3Baa;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .tab-btn:hover {
+      background-color: #6B4C3B;
+      color: #fffdfa;
+      box-shadow: 0 6px 12px #3B2F2Fcc;
+    }
+
+    .tab-btn.active {
+      background-color: #3B2F2F;
+      color: #fffdfa;
+      box-shadow: 0 6px 20px #3B2F2Fcc;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .listing-form {
+      background: #f5f1ec;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px #6B4C3B55;
+      margin-bottom: 30px;
+    }
+
+    .listing-form label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: #3B2F2F;
+    }
+
+    .listing-form input,
+    .listing-form select,
+    .listing-form textarea {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 2px solid #A67B5B;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+      background: #fffdfa;
+      color: #3B2F2F;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .listing-form input:focus,
+    .listing-form select:focus,
+    .listing-form textarea:focus {
+      border-color: #6B4C3B;
+      outline: none;
+      background-color: #fefcf9;
+    }
+
+    .btn-submit {
+      background-color: #3B2F2F;
+      color: #fffdfa;
+      font-weight: 800;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
+      box-shadow: 0 6px 12px #6B4C3Bcc;
+      transition: background-color 0.4s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: #6B4C3B;
+      color: #fffdfa;
+      box-shadow: 0 8px 18px #3B2F2Fcc;
+    }
+  </style>
+</head>
+<body>
+  <div class="listing-container">
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-roommate">Roommate Listing</button>
+      <button class="tab-btn" id="tab-room">Room Listing</button>
+    </div>
+
+    <!-- Roommate Form -->
+    <div class="tab-content active" id="content-roommate">
+      <form class="listing-form" id="roommate-form">
+        <label for="rm-name">Name</label>
+        <input type="text" id="rm-name" name="rm-name" required />
+
+        <label for="rm-location">Location</label>
+        <select id="rm-location" name="rm-location" required>
+          <option value="">Select Location</option>
+          <option value="Islamabad">Islamabad</option>
+          <option value="Karachi">Karachi</option>
+          <option value="Lahore">Lahore</option>
+        </select>
+
+        <label for="rm-hobbies">Hobbies</label>
+        <select id="rm-hobbies" name="rm-hobbies" required>
+          <option value="">Select Hobby</option>
+          <option value="Reading">Reading</option>
+          <option value="Sports">Sports</option>
+          <option value="Gaming">Gaming</option>
+        </select>
+
+        <label for="rm-price">Price Range</label>
+        <select id="rm-price" name="rm-price" required>
+          <option value="">Select Price Range</option>
+          <option value="15000">15,000</option>
+          <option value="20000">20,000</option>
+          <option value="30000">30,000</option>
+        </select>
+
+        <button type="submit" class="btn-submit">Add Roommate</button>
+      </form>
+    </div>
+
+    <!-- Room Form -->
+    <div class="tab-content" id="content-room">
+      <form class="listing-form" id="room-form">
+        <label for="room-location">Location</label>
+        <select id="room-location" name="room-location" required>
+          <option value="">Select Location</option>
+          <option value="Islamabad">Islamabad</option>
+          <option value="Karachi">Karachi</option>
+          <option value="Lahore">Lahore</option>
+        </select>
+
+        <label for="room-price">Price Range</label>
+        <select id="room-price" name="room-price" required>
+          <option value="">Select Price Range</option>
+          <option value="15000">15,000</option>
+          <option value="20000">20,000</option>
+          <option value="30000">30,000</option>
+        </select>
+
+        <label for="room-description">Description</label>
+        <textarea id="room-description" name="room-description" rows="3" placeholder="Room details, amenities, etc." required></textarea>
+
+        <button type="submit" class="btn-submit">Add Room</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Use script type="module" for modular SDK -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "firebase/app";
+    import { getAnalytics } from "firebase/analytics";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Import Realtime Database functions
+    import { getDatabase, ref, set } from "firebase/database";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCtXKQ8VMTnhHpTwNRBSE0vvUDMbYy4GK4",
+      authDomain: "roomiefindweb.firebaseapp.com",
+      databaseURL: "https://roomiefindweb-default-rtdb.firebaseio.com", // Using your default RTDB instance
+      projectId: "roomiefindweb",
+      storageBucket: "roomiefindweb.firebasestorage.app",
+      messagingSenderId: "480755218685",
+      appId: "1:480755218685:web:5b530eaf21920495132694",
+      measurementId: "G-C0TWS10YFV"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app); // Initialize Analytics
+
+    // Initialize Realtime Database
+    const db = getDatabase(app); // Pass the initialized app to getDatabase
+
+    // --- Your Test Write Operation ---
+    // Writing to a specific path *within* the database, not the root
+    const testRef = ref(db, 'temp_test_data/checkIfThisShowsUp');
+
+    set(testRef, {
+        message: "Trying to write to a specific path!",
+        successfulDeleteBefore: true, // Noting what we just did!
+        timestamp: new Date().toISOString()
+    })
+    .then(() => {
+        console.log("TEST WRITE TO PATH SUCCESSFUL: Please check the Firebase Console at /temp_test_data/checkIfThisShowsUp");
+    })
+    .catch((error) => {
+        console.error("TEST WRITE TO PATH FAILED:", error);
+    });
+
+    // --- End of Test Write Operation ---
+
+    // --- Add your tab switching logic here ---
+    const roommateTabBtn = document.getElementById('tab-roommate');
+    const roomTabBtn = document.getElementById('tab-room');
+    const roommateContent = document.getElementById('content-roommate');
+    const roomContent = document.getElementById('content-room');
+
+    roommateTabBtn.addEventListener('click', () => {
+      roommateTabBtn.classList.add('active');
+      roomTabBtn.classList.remove('active');
+      roommateContent.classList.add('active');
+      roomContent.classList.remove('active');
+    });
+
+    roomTabBtn.addEventListener('click', () => {
+      roomTabBtn.classList.add('active');
+      roommateTabBtn.classList.remove('active');
+      roomContent.classList.add('active');
+      roommateContent.classList.remove('active');
+    });
+
+    // --- Add your form submission logic here ---
+    const roommateForm = document.getElementById('roommate-form');
+    const roomForm = document.getElementById('room-form');
+
+    roommateForm.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent default form submission
+
+      // Get form data
+      const name = document.getElementById('rm-name').value;
+      const location = document.getElementById('rm-location').value;
+      const hobbies = document.getElementById('rm-hobbies').value;
+      const price = document.getElementById('rm-price').value;
+
+      // Create a data object
+      const roommateData = {
+        name: name,
+        location: location,
+        hobbies: hobbies,
+        price: parseInt(price), // Convert price to a number
+        timestamp: new Date().toISOString()
+      };
+
+      // Get a new unique key for the post
+      const newRoommateRef = push(ref(db, 'roommates'));
+
+      // Write the data to the new location
+      set(newRoommateRef, roommateData)
+        .then(() => {
+          console.log("Roommate listing added successfully!");
+          roommateForm.reset(); // Clear the form
+          alert("Roommate listing added!"); // Optional: User feedback
+        })
+        .catch((error) => {
+          console.error("Error adding roommate listing:", error);
+          alert("Failed to add roommate listing. Check console for details."); // Optional: User feedback
+        });
+    });
+
+    roomForm.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent default form submission
+
+      // Get form data
+      const location = document.getElementById('room-location').value;
+      const price = document.getElementById('room-price').value;
+      const description = document.getElementById('room-description').value;
+
+      // Create a data object
+      const roomData = {
+        location: location,
+        price: parseInt(price), // Convert price to a number
+        description: description,
+        timestamp: new Date().toISOString()
+      };
+
+      // Get a new unique key for the post
+      const newRoomRef = push(ref(db, 'rooms'));
+
+      // Write the data to the new location
+      set(newRoomRef, roomData)
+        .then(() => {
+          console.log("Room listing added successfully!");
+          roomForm.reset(); // Clear the form
+          alert("Room listing added!"); // Optional: User feedback
+        })
+        .catch((error) => {
+          console.error("Error adding room listing:", error);
+          alert("Failed to add room listing. Check console for details."); // Optional: User feedback
+        });
+    });
+
+  </script>
+</body>
+</html>

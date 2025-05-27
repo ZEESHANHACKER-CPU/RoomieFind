@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RoomieFind Compatibility Quiz</title>
+  <style>
+    /* Reset some default styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    form {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      padding: 30px 40px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #4b3ca7;
+      font-weight: 700;
+    }
+
+    ul {
+      list-style-type: none;
+      margin-bottom: 20px;
+    }
+
+    ul li {
+      margin-bottom: 12px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    ul li.error {
+      background-color: #ffe6e6;
+      color: #cc0000;
+      border: 1px solid #cc0000;
+    }
+
+    ul li.success {
+      background-color: #e6ffe6;
+      color: #006600;
+      border: 1px solid #006600;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: #764ba2;
+      outline: none;
+      box-shadow: 0 0 6px #764ba2aa;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px 0;
+      background: #764ba2;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background: #5a3585;
+    }
+
+    /* Quiz Results Styling */
+    h2 + ul {
+      background: #f9f9f9;
+      padding: 20px 25px;
+      border-radius: 12px;
+      box-shadow: inset 0 0 8px #ccc;
+      margin-top: 20px;
+    }
+
+    h2 + ul li {
+      font-weight: 500;
+      border: none;
+      padding: 8px 0;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <form action="{{ url_for('quiz') }}" method="post">
+    <h2>RoomieFind Compatibility Quiz</h2>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        <ul>
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <div>
+      <label for="listingType">Listing Type:</label>
+      <select name="listingType" id="listingType" required>
+        <option value="">Select...</option>
+        <option value="roommate">Roommate</option>
+        <option value="room">Room</option>
+      </select>
+    </div><br />
+
+    <div>
+      <label for="socialClass">Social Class:</label>
+      <select name="socialClass" id="socialClass">
+        <option value="">Select...</option>
+        <option value="Lower">Lower</option>
+        <option value="Middle">Middle</option>
+        <option value="Upper">Upper</option>
+      </select>
+    </div><br />
+
+    <div>
+      <label for="priceRange">Price Range:</label>
+      <select name="priceRange" id="priceRange" required>
+        <option value="">Select...</option>
+        <option value="15000">15000</option>
+        <option value="20000">20000</option>
+        <option value="25000">25000</option>
+      </select>
+    </div><br />
+
+    <div>
+      <label for="hobby">Hobby:</label>
+      <select name="hobby" id="hobby">
+        <option value="">Select...</option>
+        <option value="Reading">Reading</option>
+        <option value="Sports">Sports</option>
+        <option value="Gaming">Gaming</option>
+      </select>
+    </div><br />
+
+    <div>
+      <label for="city">City:</label>
+      <select name="city" id="city" required>
+        <option value="">Select...</option>
+        <option value="Islamabad">Islamabad</option>
+        <option value="Lahore">Lahore</option>
+        <option value="Karachi">Karachi</option>
+      </select>
+    </div><br />
+
+    <button type="submit">Submit</button>
+
+    {% if result %}
+    <h2>Quiz Results:</h2>
+    <ul>
+      {% for key, value in result.items() %}
+      <li><strong>{{ key }}:</strong> {{ value }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </form>
+
+</body>
+</html>
